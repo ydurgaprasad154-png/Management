@@ -1,14 +1,14 @@
 import { useState } from 'react';
 import { NavLink } from 'react-router-dom';
-import { 
-  LayoutDashboard, 
-  Users, 
-  FolderKanban, 
+import {
+  LayoutDashboard,
+  Users,
+  FolderKanban,
   Briefcase,
-  Wallet, 
-  Globe, 
-  Wrench, 
-  Bell, 
+  Wallet,
+  Globe,
+  Wrench,
+  Bell,
   Settings,
   Layers,
   ChevronLeft,
@@ -33,7 +33,7 @@ const Sidebar = () => {
   ];
 
   return (
-    <motion.aside 
+    <motion.aside
       animate={{ width: isExpanded ? 240 : 80 }}
       className="bg-primary border-r border-gray-200 h-screen sticky top-0 flex flex-col justify-between shadow-sm z-20"
     >
@@ -44,7 +44,7 @@ const Sidebar = () => {
               HFM<span className="text-gray-400">Admin</span>
             </span>
           )}
-          <button 
+          <button
             onClick={() => setIsExpanded(!isExpanded)}
             className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-500 transition-colors mx-auto"
           >
@@ -59,8 +59,8 @@ const Sidebar = () => {
               to={item.path}
               className={({ isActive }) => `
                 flex items-center px-3 py-2.5 rounded-lg transition-colors group
-                ${isActive 
-                  ? 'bg-secondary text-primary' 
+                ${isActive
+                  ? 'bg-secondary text-primary'
                   : 'text-gray-600 hover:bg-gray-100 hover:text-secondary'
                 }
               `}
@@ -75,7 +75,7 @@ const Sidebar = () => {
           ))}
         </nav>
       </div>
-      
+
       {/* Admin Profile Snippet */}
       <div className="p-4 border-t border-gray-200">
         <div className={`flex items-center ${!isExpanded && 'justify-center'}`}>

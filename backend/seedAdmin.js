@@ -4,34 +4,67 @@ import User from './models/User.js';
 
 dotenv.config();
 
-const createAdmin = async () => {
+const seedAdmins = async () => {
   try {
-    console.log("URI is: ", process.env.MONGO_URI);
+    console.log("Connecting to Database at URI: ", process.env.MONGO_URI);
     await mongoose.connect(process.env.MONGO_URI);
-    
-    const userExists = await User.findOne({ email: 'admin@heven.com' });
-    
-    if (userExists) {
-      console.log('Admin user already exists!');
-      process.exit();
-    }
-    
+
+    // Delete existing admin emails to prevent collision
+    const emailsToSeed = ['admin@heven.com', 'staff@heven.com', 'editor@heven.com', 'manager@heven.com'];
+    await User.deleteMany({ email: { $in: emailsToSeed } });
+    await User.deleteMany({ username: { $in: ['superadmin', 'admin', 'editor', 'manager'] } });
+
+    // Seed Super Admin
     await User.create({
-      name: 'System Admin',
+      name: 'Super Administrator',
       email: 'admin@heven.com',
+      username: 'superadmin',
+      password: 'password123',
+      role: 'superadmin',
+      status: 'active',
+    });
+
+    // Seed Standard Admin
+    await User.create({
+      name: 'Standard Admin',
+      email: 'staff@heven.com',
+      username: 'admin',
       password: 'password123',
       role: 'admin',
+      status: 'active',
     });
-    
-    console.log('Admin user successfully created!');
-    console.log('Email: admin@heven.com');
-    console.log('Password: password123');
-    
-    process.exit();
+
+    // Seed Editor
+    await User.create({
+      name: 'Content Editor',
+      email: 'editor@heven.com',
+      username: 'editor',
+      password: 'password123',
+      role: 'editor',
+      status: 'active',
+    });
+
+    // Seed Manager
+    await User.create({
+      name: 'Operations Manager',
+      email: 'manager@heven.com',
+      username: 'manager',
+      password: 'password123',
+      role: 'manager',
+      status: 'active',
+    });
+
+    console.log('\nSuccess! RBAC Admin accounts seeded successfully:');
+    console.log('- Super Admin: username="superadmin", email="admin@heven.com", pass="password123"');
+    console.log('- Admin:       username="admin",      email="staff@heven.com", pass="password123"');
+    console.log('- Editor:      username="editor",     email="editor@heven.com", pass="password123"');
+    console.log('- Manager:     username="manager",    email="manager@heven.com", pass="password123"');
+
+    process.exit(0);
   } catch (error) {
-    console.error('Error creating admin:', error);
+    console.error('Error seeding admin accounts:', error);
     process.exit(1);
   }
 };
 
-createAdmin();
+seedAdmins();

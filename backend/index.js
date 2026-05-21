@@ -38,12 +38,21 @@ app.use(cors());
 app.use(express.json());
 app.use(morgan('dev'));
 
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // limit each IP to 100 requests per windowMs
-});
-app.use(limiter);
+if (process.env.NODE_ENV !== 'development') {
+  const limiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 2000, // relaxed global limit to prevent normal browsing from getting blocked
+    message: 'Too many requests from this IP, please try again after 15 minutes'
+  });
+  app.use(limiter);
 
+  const loginLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 15, // limit each IP to 15 login attempts per 15 minutes
+    message: 'Too many login attempts, please try again after 15 minutes'
+  });
+  app.use('/api/auth/login', loginLimiter);
+}
 app.use('/api/auth', authRoutes);
 app.use('/api/clients', clientRoutes);
 app.use('/api/projects', projectRoutes);

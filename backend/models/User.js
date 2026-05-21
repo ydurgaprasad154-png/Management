@@ -23,8 +23,17 @@ const userSchema = mongoose.Schema(
     },
     role: {
       type: String,
-      enum: ['admin', 'client'],
+      enum: ['superadmin', 'admin', 'editor', 'manager', 'client'],
       default: 'client',
+    },
+    profileImage: {
+      type: String,
+      default: '',
+    },
+    status: {
+      type: String,
+      enum: ['active', 'suspended'],
+      default: 'active',
     },
     isDeleted: {
       type: Boolean,

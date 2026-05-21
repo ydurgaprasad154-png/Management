@@ -19,19 +19,20 @@ export const AuthProvider = ({ children }) => {
   const login = async (email, password) => {
     try {
       const { data } = await api.post('/auth/login', { email, password });
-      
-      // We only want admins to access this panel
-      if (data.role !== 'admin') {
-        throw new Error('Access denied. Admin only.');
+
+      // Allow all admin dashboard roles
+      const allowedRoles = ['superadmin', 'admin', 'editor', 'manager'];
+      if (!allowedRoles.includes(data.role)) {
+        throw new Error('Access denied. Insufficient permissions.');
       }
 
       setUser(data);
       localStorage.setItem('userInfo', JSON.stringify(data));
       return { success: true };
     } catch (error) {
-      return { 
-        success: false, 
-        message: error.response?.data?.message || error.message || 'Login failed' 
+      return {
+        success: false,
+        message: error.response?.data?.message || error.message || 'Login failed'
       };
     }
   };

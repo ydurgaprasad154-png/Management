@@ -5,12 +5,12 @@ import Project from '../models/Project.js';
 
 // Helper: compute payment fields
 const computePaymentFields = (totalAmount, advanceAmount) => {
-  const total   = Math.max(0, Number(totalAmount) || 0);
+  const total = Math.max(0, Number(totalAmount) || 0);
   const advance = Math.min(Math.max(0, Number(advanceAmount) || 0), total);
   const pending = Math.max(0, total - advance);
   const fullyPaid = total > 0 && advance >= total;
   let status = 'Pending';
-  if (fullyPaid)       status = 'Completed';
+  if (fullyPaid) status = 'Completed';
   else if (advance > 0) status = 'Partial';
   return { totalAmount: total, advanceAmount: advance, pendingAmount: pending, fullyPaid, status };
 };
@@ -74,16 +74,16 @@ const updatePayment = asyncHandler(async (req, res) => {
   const { totalAmount, advanceAmount, notes, markFullyPaid } = req.body;
 
   // Use existing values as fallback for old documents that may have legacy 'amount' field
-  const currentTotal   = totalAmount   !== undefined ? Number(totalAmount)   : (payment.totalAmount   || payment.amount || 0);
+  const currentTotal = totalAmount !== undefined ? Number(totalAmount) : (payment.totalAmount || payment.amount || 0);
   const currentAdvance = markFullyPaid ? currentTotal : (advanceAmount !== undefined ? Number(advanceAmount) : (payment.advanceAmount || 0));
 
   const computed = computePaymentFields(currentTotal, currentAdvance);
 
-  payment.totalAmount   = computed.totalAmount;
+  payment.totalAmount = computed.totalAmount;
   payment.advanceAmount = computed.advanceAmount;
   payment.pendingAmount = computed.pendingAmount;
-  payment.fullyPaid     = computed.fullyPaid;
-  payment.status        = computed.status;
+  payment.fullyPaid = computed.fullyPaid;
+  payment.status = computed.status;
   if (notes !== undefined) payment.notes = notes;
 
   await payment.save();
