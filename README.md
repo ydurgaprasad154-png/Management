@@ -55,25 +55,20 @@ npm run build
 
 ---
 
-## 3. Hosting Recommendations
+## 3. Hosting Recommendations (Vercel Ready)
 
-### Backend REST API
-* Host on **Render**, **Railway**, **Heroku**, or a custom VPS using PM2.
-* Set the Environment Variables inside the host settings dashboard.
-* Commands:
-  * Install: `npm install`
-  * Start command: `node index.js`
+All three projects are fully optimized and configured for native deployment on **Vercel**:
 
-### Frontend & Admin Panels
-* Since both are built as Static Single Page Applications (SPAs), host them on CDNs like **Vercel**, **Netlify**, or **AWS Amplify**.
-* **SPA Routing Catch-all rule**: Ensure rewrite rules are configured to redirect all routes to `index.html` to allow React Router to handle page history:
-  * **Vercel (`vercel.json`)**:
-    ```json
-    {
-      "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }]
-    }
-    ```
-  * **Netlify (`_redirects`)**:
-    ```text
-    /*   /index.html   200
-    ```
+### 1. Backend REST API (`/backend`)
+* Deploy as a **Node Serverless Function** project.
+* Vercel will automatically read `backend/vercel.json` and route all requests to the Express application via the `@vercel/node` builder.
+* Set all environment variables (e.g. `MONGO_URI`, `JWT_SECRET`, `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET`, etc.) in the Vercel project Settings -> Environment Variables.
+
+### 2. Frontend Portfolio (`/frontend`) and Admin Portal (`/admin`)
+* Deploy both as separate static SPA projects.
+* Build settings to use:
+  * **Build Command**: `npm run build`
+  * **Output Directory**: `dist`
+  * **Environment Variable**: Set `VITE_API_URL` to point to your live backend endpoint.
+* Vercel will read the local `vercel.json` in each directory to ensure smooth React Router reloads without 404 errors.
+
